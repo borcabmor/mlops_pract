@@ -1,0 +1,12 @@
+MLOps-Enunciado-Proyecto.pdf
+
+logs/
+wandb/
+
+src/__pycache__/
+*.pyc
+*.pyo
+
+.pytest_cache/
+
+.vscode/
