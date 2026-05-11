@@ -1,9 +1,11 @@
 import argparse
 from pathlib import Path
 
+import numpy as np
 import torch
 import logging
 import wandb
+import yaml
 
 from train import train_model
 from utils import (
@@ -13,6 +15,7 @@ from utils import (
     split_train_test,
     to_tensors,
     get_project_folder,
+    get_config_file_path,
 )
 from logging_config import setup_logging
 
@@ -69,15 +72,29 @@ def main():
         batch_size=int(config["batch_size"]),
     )
 
-    # Evaluate
+    # Evaluate and calculate threshold
+    model.eval()
+
     with torch.no_grad():
-        preds = model(x_test_t)
+        reconstructed = model(x_train_t)
 
-        reconstruction_error = torch.mean((x_test_t - preds) ** 2, dim=1)
+        reconstruction_errors = torch.mean(
+            torch.log1p((x_train_t - reconstructed) ** 2),
+            dim=1,
+        )
 
-        avg_error = reconstruction_error.mean().item()
+        avg_error = reconstruction_errors.mean().item()
+        threshold = reconstruction_errors.mean() + 3 * reconstruction_errors.std()
 
-    print(f"Average reconstruction error: {avg_error:.4f}")
+    # Save threshold in data config (memory)
+    config["threshold"] = float(threshold)
+    config_path = get_config_file_path() / arguments.config_file
+
+    with open(config_path, "w") as file:
+        yaml.safe_dump(config, file, sort_keys=False)
+
+    logger.info(f"Average reconstruction error: {avg_error:.4f}")
+    logger.info(f"Threshold (percentile 99): {threshold:.4f}")
 
     # Save model
     Path("models").mkdir(exist_ok=True)

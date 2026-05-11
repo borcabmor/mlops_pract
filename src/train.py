@@ -56,6 +56,6 @@ def train_model(
         )
 
         if epoch % 10 == 0:
-            print(f"Epoch {epoch}, Loss: {epoch_loss:.4f}")
+            print(f"Epoch {epoch}, Loss: {epoch_loss:.8f}")
 
     return model

@@ -42,6 +42,12 @@ def get_project_folder() -> Path:
     return Path(__file__).resolve().parents[1]
 
 
+def get_config_file_path():
+    raiz_project = get_project_folder()
+
+    return raiz_project / "config/"
+
+
 def load_config(filename: str) -> dict:
     logger = logging.getLogger(__name__)
 

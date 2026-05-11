@@ -53,7 +53,7 @@ async def lifespan(app: FastAPI):
     model.eval()
 
     # Load scaler
-    scaler = torch.load(PROJECT_ROOT / parametros["scaler_path"])
+    scaler = torch.load(PROJECT_ROOT / parametros["scaler_path"], weights_only=False)
 
     app.state.threshold = parametros["threshold"]
     app.state.scaler = scaler
@@ -89,11 +89,18 @@ def predict(datos: AbusiveHostingUseInput):
 
     with torch.no_grad():
         output = app.state.model(X)
-        reconstruction_error = torch.mean((X - output) ** 2).item()
+
+        reconstruction_errors = torch.mean((X - output) ** 2, dim=1)
+        reconstruction_error = reconstruction_errors[0].item()
+
         threshold = app.state.threshold
-        prediction = int(reconstruction_error > threshold)
+
+        anomaly_score = reconstruction_error - threshold
+        prediction = int(reconstruction_error > threshold * 1.2)
 
     return {
         "reconstruction_error": reconstruction_error,
+        "threshold": app.state.threshold,
+        "anomaly_score": anomaly_score,
         "abuse_prediction": prediction,
     }
