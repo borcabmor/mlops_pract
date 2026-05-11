@@ -48,8 +48,12 @@ def main():
         random_state=int(config["random_state"]),
     )
 
-    # Preprocess
-    x_train_s, x_test_s, _ = scale_features(X_train, X_test)
+    # Preprocess (scale values)
+    x_train_s, x_test_s, scaler = scale_features(X_train, X_test)
+
+    # Save scaler
+    Path("models").mkdir(exist_ok=True)
+    torch.save(scaler, config["scaler_path"])
 
     # Tensors
     x_train_t, x_test_t = to_tensors(x_train_s, x_test_s)
@@ -61,6 +65,8 @@ def main():
         hidden_dim=int(config["hidden_dim"]),
         lr=float(config["lr"]),
         epochs=int(config["epocas"]),
+        weight_decay=float(config["weight_decay"]),
+        batch_size=int(config["batch_size"]),
     )
 
     # Evaluate

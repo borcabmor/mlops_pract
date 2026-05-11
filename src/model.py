@@ -2,6 +2,10 @@ import torch.nn as nn
 
 
 class AbusiveHostingUseModel(nn.Module):
+    """
+    Modelo autoencoder para detección de anomalias
+    """
+
     def __init__(self, input_dim: int, hidden_dim: int):
         super().__init__()
 

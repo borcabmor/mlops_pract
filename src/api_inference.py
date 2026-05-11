@@ -52,6 +52,11 @@ async def lifespan(app: FastAPI):
     model.load_state_dict(state_dict)
     model.eval()
 
+    # Load scaler
+    scaler = torch.load(PROJECT_ROOT / parametros["scaler_path"])
+
+    app.state.threshold = parametros["threshold"]
+    app.state.scaler = scaler
     app.state.model = model
 
     yield  # API ready
@@ -64,25 +69,31 @@ app = FastAPI(title="Abusive hosting use system.", lifespan=lifespan)
 def predict(datos: AbusiveHostingUseInput):
     # Convert input to tensor
     # Pydantic already check if data has correct format
-    X = torch.tensor(
+    X = [
         [
-            [
-                datos.emails_sent_hour,
-                datos.cpu_usage,
-                datos.outbound_traffic_gb,
-                datos.domains_count,
-                datos.abuse_reports,
-                datos.failed_logins_hour,
-                datos.requests_per_minute,
-                datos.uptime_days,
-            ]
-        ],
-        dtype=torch.float32,
-    )
+            datos.emails_sent_hour,
+            datos.cpu_usage,
+            datos.outbound_traffic_gb,
+            datos.domains_count,
+            datos.abuse_reports,
+            datos.failed_logins_hour,
+            datos.requests_per_minute,
+            datos.uptime_days,
+        ]
+    ]
+
+    # Apply scaler to data
+    X = app.state.scaler.transform(X)
+
+    X = torch.tensor(X, dtype=torch.float32)
 
     with torch.no_grad():
         output = app.state.model(X)
-        probability = output.item()
-        prediction = int(probability > 0.5)
+        reconstruction_error = torch.mean((X - output) ** 2).item()
+        threshold = app.state.threshold
+        prediction = int(reconstruction_error > threshold)
 
-    return {"abuse_probability": probability, "abuse_prediction": prediction}
+    return {
+        "reconstruction_error": reconstruction_error,
+        "abuse_prediction": prediction,
+    }
