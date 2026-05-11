@@ -1,0 +1,8 @@
+lr: 0.001
+epocas: 200
+test_size: 0.2
+random_state: 35
+input_dim: 8
+hidden_dim: 16
+data_path: "data/dataset.csv"
+model_path: "models/model.pth"
