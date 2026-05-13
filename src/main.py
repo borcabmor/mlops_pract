@@ -76,10 +76,10 @@ def main():
     model.eval()
 
     with torch.no_grad():
-        reconstructed = model(x_train_t)
+        reconstructed = model(x_test_t)
 
         reconstruction_errors = torch.mean(
-            torch.log1p((x_train_t - reconstructed) ** 2),
+            torch.log1p((x_test_t - reconstructed) ** 2),
             dim=1,
         )
 
@@ -99,6 +99,8 @@ def main():
     # Save model
     Path("models").mkdir(exist_ok=True)
     torch.save(model.state_dict(), config["model_path"])
+
+    logger.info("Model saved.")
 
     model_artifact = wandb.Artifact(
         name="trained_model", type="model", description="Trained model"

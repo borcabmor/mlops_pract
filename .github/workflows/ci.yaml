@@ -1,0 +1,33 @@
+name: CI
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configurar Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: Dependencias
+      run: pip install -r requirements.txt
+
+    - name: Ejecutar tests de datos
+      run: pytest tests/test_data.py
+
+    - name: Ejecutar tests unitarios
+      run: pytest tests/test_unit.py
+
+    - name: Ejecutar tests de API
+      run: pytest tests/test_inference.py
+      
+    - name: Construir la imagen
+      run: |
+        echo "Construyendo la imagen"
+        docker build -f Dockerfile.api -t abusive_hosting_use_api_v1:test .

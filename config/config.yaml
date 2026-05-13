@@ -6,7 +6,7 @@ input_dim: 8
 hidden_dim: 32
 weight_decay: 0.0
 batch_size: 64
-threshold: 0.003482521278783679
+threshold: 0.003038649680092931
 data_path: data/dataset.csv
 model_path: models/model.pth
 scaler_path: models/scaler.pkl
