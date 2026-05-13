@@ -8,6 +8,7 @@ from src.utils import (
     to_tensors,
 )
 from src.train import train_model
+from unittest.mock import patch
 
 
 # UTILS TESTS
@@ -62,21 +63,18 @@ def test_to_tensors():
 
 # MODEL TESTS
 def test_model_forward():
-
     model = AbusiveHostingUseModel(
         input_dim=8,
         hidden_dim=16,
     )
 
     x = torch.rand(4, 8)
-
     output = model(x)
 
     assert output.shape == (4, 8)
 
 
 def test_model_output_is_tensor():
-
     model = AbusiveHostingUseModel(
         input_dim=8,
         hidden_dim=16,
@@ -90,8 +88,8 @@ def test_model_output_is_tensor():
 
 
 # TRAIN TESTS
+@patch("src.train.wandb.log")
 def test_train_model_returns_model():
-
     x_train = torch.rand(100, 8)
 
     model = train_model(
@@ -105,8 +103,8 @@ def test_train_model_returns_model():
     assert model is not None
 
 
+@patch("src.train.wandb.log")
 def test_train_model_forward_after_training():
-
     x_train = torch.rand(100, 8)
 
     model = train_model(
