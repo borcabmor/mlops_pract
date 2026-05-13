@@ -9,6 +9,9 @@ from sklearn.preprocessing import StandardScaler
 
 
 def load_data(path: str) -> pd.DataFrame:
+    """
+    Load data
+    """
     logger = logging.getLogger(__name__)
 
     logger.info("Loading dataset.")
