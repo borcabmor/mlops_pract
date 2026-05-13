@@ -1,10 +1,15 @@
 name: CD
+
 on:
   push:
     branches: ["master"]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,13 +21,13 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build image
+      - name: Build imagen
         run: |
           docker build \
             -f Dockerfile.api \
-            -t ghcr.io/${{ github.repository }}/abusive-hosting-api:latest \
+            -t ghcr.io/${{ github.repository_owner }}/abusive-hosting-api:latest \
             .
 
-      - name: Push image
+      - name: Push imagen
         run: |
-          docker push ghcr.io/${{ github.repository }}/abusive-hosting-api:latest
+          docker push ghcr.io/${{ github.repository_owner }}/abusive-hosting-api:latest
