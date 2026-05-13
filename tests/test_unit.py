@@ -89,7 +89,7 @@ def test_model_output_is_tensor():
 
 # TRAIN TESTS
 @patch("src.train.wandb.log")
-def test_train_model_returns_model():
+def test_train_model_returns_model(mock_wandb):
     x_train = torch.rand(100, 8)
 
     model = train_model(
@@ -104,7 +104,7 @@ def test_train_model_returns_model():
 
 
 @patch("src.train.wandb.log")
-def test_train_model_forward_after_training():
+def test_train_model_forward_after_training(mock_wandb):
     x_train = torch.rand(100, 8)
 
     model = train_model(
