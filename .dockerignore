@@ -15,7 +15,6 @@ src/__pycache__/
 logs/
 *.logs
 
-models/
 wandb/
 
 notebooks/
