@@ -16,10 +16,8 @@ def test_predict_endpoint():
         "uptime_days": 100,
     }
 
-    response = client.post(
-        "/evaluate",
-        json=payload,
-    )
+    with TestClient(app) as client:
+        response = client.post("/evaluate", json=payload)
 
     assert response.status_code == 200
 
