@@ -1,13 +1,13 @@
 import torch
 import pandas as pd
 
-from model import AbusiveHostingUseModel
+from src.model import AbusiveHostingUseModel
 from src.utils import (
     split_train_test,
     scale_features,
     to_tensors,
 )
-from train import train_model
+from src.train import train_model
 
 
 # UTILS TESTS
