@@ -17,8 +17,6 @@ logs/
 
 models/
 wandb/
-config/
-*.yaml
 
 notebooks/
 *.ipynb
