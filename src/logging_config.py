@@ -1,6 +1,6 @@
 import logging
 
-from utils import get_project_folder
+from src.utils import get_project_folder
 from pathlib import Path
 
 

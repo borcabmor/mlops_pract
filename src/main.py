@@ -7,8 +7,8 @@ import logging
 import wandb
 import yaml
 
-from train import train_model
-from utils import (
+from src.train import train_model
+from src.utils import (
     load_config,
     load_data,
     scale_features,
@@ -17,7 +17,7 @@ from utils import (
     get_project_folder,
     get_config_file_path,
 )
-from logging_config import setup_logging
+from src.logging_config import setup_logging
 
 
 def main():
